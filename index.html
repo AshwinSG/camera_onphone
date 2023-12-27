@@ -40,13 +40,11 @@
     <video id="videoElement" autoplay></video>
 </div>
 <button id="startButton">Start Camera</button>
-<button id="cap_image" disabled>Capture Image</button>
 <button id="stopButton" disabled>Stop Camera</button>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     var startButton = document.getElementById('startButton');
-    var cap_image = document.getElementById('cap_image');
     var stopButton = document.getElementById('stopButton');
     var video = document.getElementById('videoElement');
     var stream;
@@ -54,8 +52,11 @@ document.addEventListener('DOMContentLoaded', function () {
     startButton.addEventListener('click', function () {
         // Check if the browser supports getUserMedia
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            // Specify facingMode to use the back camera on mobile devices
+            var constraints = { video: { facingMode: 'environment' } };
+
             // Access the user's camera
-            navigator.mediaDevices.getUserMedia({ video: true })
+            navigator.mediaDevices.getUserMedia(constraints)
                 .then(function (videoStream) {
                     // Save the stream reference for stopping later
                     stream = videoStream;
@@ -68,7 +69,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // Enable the "Stop Camera" button and disable the "Start Camera" button
                     stopButton.removeAttribute('disabled');
-                    cap_image.removeAttribute('disabled');
                     startButton.setAttribute('disabled', 'disabled');
                 })
                 .catch(function (error) {
@@ -91,7 +91,6 @@ document.addEventListener('DOMContentLoaded', function () {
             video.srcObject = null;
 
             // Disable the "Stop Camera" button and enable the "Start Camera" button
-            cap_image.setAttribute('disabled', 'disabled');
             stopButton.setAttribute('disabled', 'disabled');
             startButton.removeAttribute('disabled');
         }
